@@ -25,7 +25,7 @@ export default function LogoutButton() {
   }
 
   return (
-    <Button onClick={handleLogout} variant="outline" size="sm" disabled={isLoading}>
+    <Button onClick={handleLogout} variant="ghost" size="sm" disabled={isLoading}>
       {isLoading ? "Logging out..." : "Logout"}
     </Button>
   )

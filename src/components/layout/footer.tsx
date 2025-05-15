@@ -1,4 +1,5 @@
 import { Apple } from "lucide-react"
+import Image from "next/image"
 import Link from "next/link"
 
 export default function Footer() {
@@ -8,8 +9,9 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="space-y-3">
             <div className="flex items-center gap-2">
-              <Apple className="h-6 w-6 text-green-500" />
-              <span className="text-xl font-bold">FreshFruit</span>
+              <Link href="/">
+              <Image src="/logo.svg" alt="logo" width={150} height={150} />
+            </Link>
             </div>
             <p className="text-sm text-muted-foreground">
               Menyediakan buah segar berkualitas premium untuk keluarga Anda.
