@@ -2786,10 +2786,8 @@ export namespace Prisma {
   export type FruitMinAggregateOutputType = {
     id: string | null
     name: string | null
-    category: string | null
     price: number | null
     stock: number | null
-    unit: string | null
     image: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -2798,10 +2796,8 @@ export namespace Prisma {
   export type FruitMaxAggregateOutputType = {
     id: string | null
     name: string | null
-    category: string | null
     price: number | null
     stock: number | null
-    unit: string | null
     image: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -2810,10 +2806,8 @@ export namespace Prisma {
   export type FruitCountAggregateOutputType = {
     id: number
     name: number
-    category: number
     price: number
     stock: number
-    unit: number
     image: number
     createdAt: number
     updatedAt: number
@@ -2834,10 +2828,8 @@ export namespace Prisma {
   export type FruitMinAggregateInputType = {
     id?: true
     name?: true
-    category?: true
     price?: true
     stock?: true
-    unit?: true
     image?: true
     createdAt?: true
     updatedAt?: true
@@ -2846,10 +2838,8 @@ export namespace Prisma {
   export type FruitMaxAggregateInputType = {
     id?: true
     name?: true
-    category?: true
     price?: true
     stock?: true
-    unit?: true
     image?: true
     createdAt?: true
     updatedAt?: true
@@ -2858,10 +2848,8 @@ export namespace Prisma {
   export type FruitCountAggregateInputType = {
     id?: true
     name?: true
-    category?: true
     price?: true
     stock?: true
-    unit?: true
     image?: true
     createdAt?: true
     updatedAt?: true
@@ -2957,10 +2945,8 @@ export namespace Prisma {
   export type FruitGroupByOutputType = {
     id: string
     name: string
-    category: string
     price: number
     stock: number
-    unit: string
     image: string | null
     createdAt: Date
     updatedAt: Date
@@ -2988,10 +2974,8 @@ export namespace Prisma {
   export type FruitSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
-    category?: boolean
     price?: boolean
     stock?: boolean
-    unit?: boolean
     image?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -3003,10 +2987,8 @@ export namespace Prisma {
   export type FruitSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
-    category?: boolean
     price?: boolean
     stock?: boolean
-    unit?: boolean
     image?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -3015,10 +2997,8 @@ export namespace Prisma {
   export type FruitSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
-    category?: boolean
     price?: boolean
     stock?: boolean
-    unit?: boolean
     image?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -3027,16 +3007,14 @@ export namespace Prisma {
   export type FruitSelectScalar = {
     id?: boolean
     name?: boolean
-    category?: boolean
     price?: boolean
     stock?: boolean
-    unit?: boolean
     image?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type FruitOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "category" | "price" | "stock" | "unit" | "image" | "createdAt" | "updatedAt", ExtArgs["result"]["fruit"]>
+  export type FruitOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "price" | "stock" | "image" | "createdAt" | "updatedAt", ExtArgs["result"]["fruit"]>
   export type FruitInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     orderItems?: boolean | Fruit$orderItemsArgs<ExtArgs>
     stockHistory?: boolean | Fruit$stockHistoryArgs<ExtArgs>
@@ -3054,10 +3032,8 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       name: string
-      category: string
       price: number
       stock: number
-      unit: string
       image: string | null
       createdAt: Date
       updatedAt: Date
@@ -3488,10 +3464,8 @@ export namespace Prisma {
   interface FruitFieldRefs {
     readonly id: FieldRef<"Fruit", 'String'>
     readonly name: FieldRef<"Fruit", 'String'>
-    readonly category: FieldRef<"Fruit", 'String'>
     readonly price: FieldRef<"Fruit", 'Float'>
     readonly stock: FieldRef<"Fruit", 'Int'>
-    readonly unit: FieldRef<"Fruit", 'String'>
     readonly image: FieldRef<"Fruit", 'String'>
     readonly createdAt: FieldRef<"Fruit", 'DateTime'>
     readonly updatedAt: FieldRef<"Fruit", 'DateTime'>
@@ -9733,10 +9707,8 @@ export namespace Prisma {
   export const FruitScalarFieldEnum: {
     id: 'id',
     name: 'name',
-    category: 'category',
     price: 'price',
     stock: 'stock',
-    unit: 'unit',
     image: 'image',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
@@ -10025,10 +9997,8 @@ export namespace Prisma {
     NOT?: FruitWhereInput | FruitWhereInput[]
     id?: StringFilter<"Fruit"> | string
     name?: StringFilter<"Fruit"> | string
-    category?: StringFilter<"Fruit"> | string
     price?: FloatFilter<"Fruit"> | number
     stock?: IntFilter<"Fruit"> | number
-    unit?: StringFilter<"Fruit"> | string
     image?: StringNullableFilter<"Fruit"> | string | null
     createdAt?: DateTimeFilter<"Fruit"> | Date | string
     updatedAt?: DateTimeFilter<"Fruit"> | Date | string
@@ -10039,10 +10009,8 @@ export namespace Prisma {
   export type FruitOrderByWithRelationInput = {
     id?: SortOrder
     name?: SortOrder
-    category?: SortOrder
     price?: SortOrder
     stock?: SortOrder
-    unit?: SortOrder
     image?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -10056,10 +10024,8 @@ export namespace Prisma {
     OR?: FruitWhereInput[]
     NOT?: FruitWhereInput | FruitWhereInput[]
     name?: StringFilter<"Fruit"> | string
-    category?: StringFilter<"Fruit"> | string
     price?: FloatFilter<"Fruit"> | number
     stock?: IntFilter<"Fruit"> | number
-    unit?: StringFilter<"Fruit"> | string
     image?: StringNullableFilter<"Fruit"> | string | null
     createdAt?: DateTimeFilter<"Fruit"> | Date | string
     updatedAt?: DateTimeFilter<"Fruit"> | Date | string
@@ -10070,10 +10036,8 @@ export namespace Prisma {
   export type FruitOrderByWithAggregationInput = {
     id?: SortOrder
     name?: SortOrder
-    category?: SortOrder
     price?: SortOrder
     stock?: SortOrder
-    unit?: SortOrder
     image?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -10090,10 +10054,8 @@ export namespace Prisma {
     NOT?: FruitScalarWhereWithAggregatesInput | FruitScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Fruit"> | string
     name?: StringWithAggregatesFilter<"Fruit"> | string
-    category?: StringWithAggregatesFilter<"Fruit"> | string
     price?: FloatWithAggregatesFilter<"Fruit"> | number
     stock?: IntWithAggregatesFilter<"Fruit"> | number
-    unit?: StringWithAggregatesFilter<"Fruit"> | string
     image?: StringNullableWithAggregatesFilter<"Fruit"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Fruit"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Fruit"> | Date | string
@@ -10569,10 +10531,8 @@ export namespace Prisma {
   export type FruitCreateInput = {
     id?: string
     name: string
-    category: string
     price: number
     stock: number
-    unit: string
     image?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -10583,10 +10543,8 @@ export namespace Prisma {
   export type FruitUncheckedCreateInput = {
     id?: string
     name: string
-    category: string
     price: number
     stock: number
-    unit: string
     image?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -10597,10 +10555,8 @@ export namespace Prisma {
   export type FruitUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    category?: StringFieldUpdateOperationsInput | string
     price?: FloatFieldUpdateOperationsInput | number
     stock?: IntFieldUpdateOperationsInput | number
-    unit?: StringFieldUpdateOperationsInput | string
     image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -10611,10 +10567,8 @@ export namespace Prisma {
   export type FruitUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    category?: StringFieldUpdateOperationsInput | string
     price?: FloatFieldUpdateOperationsInput | number
     stock?: IntFieldUpdateOperationsInput | number
-    unit?: StringFieldUpdateOperationsInput | string
     image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -10625,10 +10579,8 @@ export namespace Prisma {
   export type FruitCreateManyInput = {
     id?: string
     name: string
-    category: string
     price: number
     stock: number
-    unit: string
     image?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -10637,10 +10589,8 @@ export namespace Prisma {
   export type FruitUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    category?: StringFieldUpdateOperationsInput | string
     price?: FloatFieldUpdateOperationsInput | number
     stock?: IntFieldUpdateOperationsInput | number
-    unit?: StringFieldUpdateOperationsInput | string
     image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -10649,10 +10599,8 @@ export namespace Prisma {
   export type FruitUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    category?: StringFieldUpdateOperationsInput | string
     price?: FloatFieldUpdateOperationsInput | number
     stock?: IntFieldUpdateOperationsInput | number
-    unit?: StringFieldUpdateOperationsInput | string
     image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -11255,10 +11203,8 @@ export namespace Prisma {
   export type FruitCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
-    category?: SortOrder
     price?: SortOrder
     stock?: SortOrder
-    unit?: SortOrder
     image?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -11272,10 +11218,8 @@ export namespace Prisma {
   export type FruitMaxOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
-    category?: SortOrder
     price?: SortOrder
     stock?: SortOrder
-    unit?: SortOrder
     image?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -11284,10 +11228,8 @@ export namespace Prisma {
   export type FruitMinOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
-    category?: SortOrder
     price?: SortOrder
     stock?: SortOrder
-    unit?: SortOrder
     image?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -12882,10 +12824,8 @@ export namespace Prisma {
   export type FruitCreateWithoutOrderItemsInput = {
     id?: string
     name: string
-    category: string
     price: number
     stock: number
-    unit: string
     image?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -12895,10 +12835,8 @@ export namespace Prisma {
   export type FruitUncheckedCreateWithoutOrderItemsInput = {
     id?: string
     name: string
-    category: string
     price: number
     stock: number
-    unit: string
     image?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -12961,10 +12899,8 @@ export namespace Prisma {
   export type FruitUpdateWithoutOrderItemsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    category?: StringFieldUpdateOperationsInput | string
     price?: FloatFieldUpdateOperationsInput | number
     stock?: IntFieldUpdateOperationsInput | number
-    unit?: StringFieldUpdateOperationsInput | string
     image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -12974,10 +12910,8 @@ export namespace Prisma {
   export type FruitUncheckedUpdateWithoutOrderItemsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    category?: StringFieldUpdateOperationsInput | string
     price?: FloatFieldUpdateOperationsInput | number
     stock?: IntFieldUpdateOperationsInput | number
-    unit?: StringFieldUpdateOperationsInput | string
     image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -12987,10 +12921,8 @@ export namespace Prisma {
   export type FruitCreateWithoutStockHistoryInput = {
     id?: string
     name: string
-    category: string
     price: number
     stock: number
-    unit: string
     image?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -13000,10 +12932,8 @@ export namespace Prisma {
   export type FruitUncheckedCreateWithoutStockHistoryInput = {
     id?: string
     name: string
-    category: string
     price: number
     stock: number
-    unit: string
     image?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -13058,10 +12988,8 @@ export namespace Prisma {
   export type FruitUpdateWithoutStockHistoryInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    category?: StringFieldUpdateOperationsInput | string
     price?: FloatFieldUpdateOperationsInput | number
     stock?: IntFieldUpdateOperationsInput | number
-    unit?: StringFieldUpdateOperationsInput | string
     image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -13071,10 +12999,8 @@ export namespace Prisma {
   export type FruitUncheckedUpdateWithoutStockHistoryInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    category?: StringFieldUpdateOperationsInput | string
     price?: FloatFieldUpdateOperationsInput | number
     stock?: IntFieldUpdateOperationsInput | number
-    unit?: StringFieldUpdateOperationsInput | string
     image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string

@@ -133,10 +133,8 @@ exports.Prisma.UserScalarFieldEnum = {
 exports.Prisma.FruitScalarFieldEnum = {
   id: 'id',
   name: 'name',
-  category: 'category',
   price: 'price',
   stock: 'stock',
-  unit: 'unit',
   image: 'image',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
