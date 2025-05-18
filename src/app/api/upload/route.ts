@@ -35,7 +35,8 @@ export const PUT = async (request: Request) => {
 }
 
 export const DELETE = async (request: Request) => {
-  const { searchParams } = new URL("imagesUrl");
+  // Fix: Use the request.url instead of a hardcoded string
+  const { searchParams } = new URL(request.url);
   const imagesUrl = searchParams.get("imagesUrl") as string;
   await del(imagesUrl);
 

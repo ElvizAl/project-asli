@@ -18,18 +18,14 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Skeleton } from "@/components/ui/skeleton"
-import { toast } from "sonner"
-
+import { ambilBuah, hapusBuah } from "@/actions/fruit-actions"
 
 interface Fruit {
   id: string
   name: string
-  category: string
   price: number
   stock: number
-  unit: string
   image: string | null
 }
 
@@ -37,8 +33,6 @@ export default function InventoryPage() {
   const router = useRouter()
   const [fruits, setFruits] = useState<Fruit[]>([])
   const [searchTerm, setSearchTerm] = useState("")
-  const [categoryFilter, setCategoryFilter] = useState("all")
-  const [categories, setCategories] = useState<string[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -46,18 +40,13 @@ export default function InventoryPage() {
     const fetchFruits = async () => {
       try {
         setLoading(true)
-        const response = await fetch("/api/fruits")
+        const result = await ambilBuah()
 
-        if (!response.ok) {
-          throw new Error("Gagal memuat data buah")
+        if (result.error) {
+          throw new Error(result.error)
         }
 
-        const data = await response.json()
-        setFruits(data)
-
-        // Extract unique categories
-        const uniqueCategories = ["all", ...new Set(data.map((fruit: Fruit) => fruit.category)) as Set<string>]
-        setCategories(uniqueCategories)
+        setFruits(result.fruits || [])
       } catch (err) {
         console.error("Error fetching fruits:", err)
         setError(err instanceof Error ? err.message : "Terjadi kesalahan saat memuat data")
@@ -69,30 +58,27 @@ export default function InventoryPage() {
     fetchFruits()
   }, [])
 
+  // Add the missing filteredFruits definition
   const filteredFruits = fruits.filter((fruit) => {
-    const matchesSearch = fruit.name.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesCategory = categoryFilter === "all" || fruit.category === categoryFilter
-    return matchesSearch && matchesCategory
+    return fruit.name.toLowerCase().includes(searchTerm.toLowerCase())
   })
 
+  // Add the missing handleDelete function
   const handleDelete = async (id: string, name: string) => {
     if (window.confirm(`Apakah Anda yakin ingin menghapus ${name}?`)) {
       try {
-        const response = await fetch(`/api/fruits/${id}`, {
-          method: "DELETE",
-        })
+        const result = await hapusBuah(id)
 
-        if (!response.ok) {
-          throw new Error("Gagal menghapus buah")
+        if (result.success) {
+          // Remove the deleted fruit from the state
+          setFruits(fruits.filter(fruit => fruit.id !== id))
+          alert(`${name} telah dihapus!`)
+        } else {
+          alert(result.error || "Gagal menghapus buah")
         }
-
-        // Remove the deleted fruit from state
-        setFruits(fruits.filter((fruit) => fruit.id !== id))
-
-        toast("Buah berhasil dihapus")
-      } catch (err) {
-        console.error("Error deleting fruit:", err)
-        toast.error("Gagal menghapus buah")
+      } catch (error) {
+        console.error("Error deleting fruit:", error)
+        alert("Terjadi kesalahan saat menghapus buah")
       }
     }
   }
@@ -141,18 +127,6 @@ export default function InventoryPage() {
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
-              <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                <SelectTrigger className="w-full md:w-[180px]">
-                  <SelectValue placeholder="Kategori" />
-                </SelectTrigger>
-                <SelectContent>
-                  {categories.map((category) => (
-                    <SelectItem key={category} value={category}>
-                      {category === "all" ? "Semua Kategori" : category}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
             </div>
           </div>
 
@@ -160,8 +134,8 @@ export default function InventoryPage() {
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead>Gambar</TableHead>
                   <TableHead>Buah</TableHead>
-                  <TableHead>Kategori</TableHead>
                   <TableHead className="hidden md:table-cell">
                     <div className="flex items-center space-x-1">
                       <span>Harga</span>
@@ -174,7 +148,6 @@ export default function InventoryPage() {
                       <ArrowUpDown className="h-4 w-4" />
                     </div>
                   </TableHead>
-                  <TableHead className="hidden md:table-cell">Unit</TableHead>
                   <TableHead className="text-right">Aksi</TableHead>
                 </TableRow>
               </TableHeader>
@@ -184,19 +157,13 @@ export default function InventoryPage() {
                   [...Array(5)].map((_, i) => (
                     <TableRow key={i}>
                       <TableCell>
-                        <div className="flex items-center gap-3">
-                          <Skeleton className="h-10 w-10 rounded-md" />
-                          <Skeleton className="h-4 w-[150px]" />
-                        </div>
+                        <Skeleton className="h-10 w-10 rounded-md" />
                       </TableCell>
                       <TableCell>
-                        <Skeleton className="h-4 w-[100px]" />
+                        <Skeleton className="h-4 w-[150px]" />
                       </TableCell>
                       <TableCell className="hidden md:table-cell">
                         <Skeleton className="h-4 w-[80px]" />
-                      </TableCell>
-                      <TableCell className="hidden md:table-cell">
-                        <Skeleton className="h-4 w-[50px]" />
                       </TableCell>
                       <TableCell className="hidden md:table-cell">
                         <Skeleton className="h-4 w-[50px]" />
@@ -208,7 +175,7 @@ export default function InventoryPage() {
                   ))
                 ) : filteredFruits.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={6} className="h-24 text-center">
+                    <TableCell colSpan={5} className="h-24 text-center">
                       Tidak ada data buah yang ditemukan.
                     </TableCell>
                   </TableRow>
@@ -216,27 +183,27 @@ export default function InventoryPage() {
                   filteredFruits.map((fruit) => (
                     <TableRow key={fruit.id}>
                       <TableCell>
-                        <div className="flex items-center gap-3">
-                          <div className="relative h-10 w-10 overflow-hidden rounded-md">
-                            <Image
-                              src={fruit.image || "/placeholder.svg?height=40&width=40"}
-                              alt={fruit.name}
-                              width={40}
-                              height={40}
-                              className="object-cover"
-                            />
-                          </div>
-                          <div className="font-medium">{fruit.name}</div>
+                        <div className="relative h-20 w-20 overflow-hidden rounded-md">
+                          <Image
+                            src={fruit.image || "/placeholder.svg"}
+                            alt={fruit.name}
+                            fill
+                            sizes="20vw"
+                            className="object-cover"
+                          />
                         </div>
                       </TableCell>
-                      <TableCell>{fruit.category}</TableCell>
-                      <TableCell className="hidden md:table-cell">Rp {fruit.price.toLocaleString("id-ID")}</TableCell>
+                      <TableCell>
+                        <div className="font-medium">{fruit.name}</div>
+                      </TableCell>
+                      <TableCell className="hidden md:table-cell">
+                        Rp {fruit.price.toLocaleString("id-ID")}
+                      </TableCell>
                       <TableCell
                         className={`hidden md:table-cell ${fruit.stock < 10 ? "text-red-500 font-medium" : ""}`}
                       >
                         {fruit.stock}
                       </TableCell>
-                      <TableCell className="hidden md:table-cell">{fruit.unit}</TableCell>
                       <TableCell className="text-right">
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
@@ -251,9 +218,7 @@ export default function InventoryPage() {
                               <Link href={`/dashboard/inventory/edit/${fruit.id}`}>Edit</Link>
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem asChild>
-                              <Link href={`/dashboard/inventory/edit/${fruit.id}?tab=stock`}>Tambah Stok</Link>
-                            </DropdownMenuItem>
+                            <DropdownMenuItem>Tambah Stok</DropdownMenuItem>
                             <DropdownMenuItem
                               className="text-red-600"
                               onClick={() => handleDelete(fruit.id, fruit.name)}

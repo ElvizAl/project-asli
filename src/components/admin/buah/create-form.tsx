@@ -1,8 +1,5 @@
 "use client"
-
-import type React from "react"
-
-import { useState, useRef, useTransition, type FormEvent } from "react"
+import { useState, useRef, useTransition, useActionState } from "react"
 import { useRouter } from "next/navigation"
 import { ArrowLeft, CloudUpload, X } from "lucide-react"
 import Link from "next/link"
@@ -13,6 +10,7 @@ import { Label } from "@/components/ui/label"
 import Image from "next/image"
 import { BarLoader } from "react-spinners"
 import { toast } from "sonner"
+import { simpanBuah } from "@/actions/fruit-actions"
 
 const AddFruitPage = () => {
   const router = useRouter()
@@ -20,17 +18,6 @@ const AddFruitPage = () => {
   const [image, setImage] = useState("")
   const [message, setMessage] = useState("")
   const [pending, startTransition] = useTransition()
-  const [formData, setFormData] = useState({
-    name: "",
-    price: "",
-    stock: "",
-  })
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
-  }
-
   const handleImageUpload = () => {
     if (!inputFileRef.current?.files) return null
     const file = inputFileRef.current.files[0]
@@ -66,7 +53,7 @@ const AddFruitPage = () => {
   }
 
   const handleRemoveImage = (image: string) => {
-    startTransition( async () => {
+    startTransition(async () => {
       try {
         await fetch(`/api/upload?imagesUrl=${image}`, {
           method: "DELETE",
@@ -78,42 +65,8 @@ const AddFruitPage = () => {
     })
   }
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault()
 
-    if (!image) {
-      setMessage("Please upload an image first")
-      return
-    }
-
-    startTransition(async () => {
-      try {
-        // Here you would typically send the form data to your API
-        // For example:
-        // const response = await fetch("/api/fruits", {
-        //   method: "POST",
-        //   headers: {
-        //     "Content-Type": "application/json",
-        //   },
-        //   body: JSON.stringify({
-        //     name: formData.name,
-        //     price: Number(formData.price),
-        //     stock: Number(formData.stock),
-        //     imageUrl: image
-        //   }),
-        // })
-
-        // For now, we'll just simulate a successful submission
-        toast.success("mantap")
-
-        // Redirect to inventory page
-        router.push("/dashboard/inventory")
-      } catch (error) {
-        console.error(error)
-        toast.error("error su")
-      }
-    })
-  }
+  const [state, formAction, isPending] = useActionState(simpanBuah.bind(null, image), null)
 
   return (
     <div className="flex-1 space-y-4 p-4 pt-6 md:p-8">
@@ -127,7 +80,7 @@ const AddFruitPage = () => {
       </div>
 
       <Card>
-        <form onSubmit={handleSubmit}>
+        <form action={formAction}>
           <CardHeader>
             <CardTitle>Detail Buah</CardTitle>
             <CardDescription className="mb-2">
@@ -141,11 +94,12 @@ const AddFruitPage = () => {
                 <Input
                   id="name"
                   name="name"
-                  value={formData.name}
-                  onChange={handleInputChange}
+                  type="text"
                   placeholder="Masukkan nama buah"
-                  required
                 />
+                <div aria-live="polite" aria-atomic="true">
+                  <span className="text-sm bg-red-500 mt-2">{state?.error?.name}</span>
+                </div>
               </div>
 
               <div className="space-y-2">
@@ -156,12 +110,12 @@ const AddFruitPage = () => {
                   id="price"
                   name="price"
                   type="number"
-                  value={formData.price}
-                  onChange={handleInputChange}
                   placeholder="0"
                   min="0"
-                  required
                 />
+                <div aria-live="polite" aria-atomic="true">
+                  <span className="text-sm bg-red-500 mt-2">{state?.error?.price}</span>
+                </div>
               </div>
 
               <div className="space-y-2">
@@ -172,12 +126,12 @@ const AddFruitPage = () => {
                   id="stock"
                   name="stock"
                   type="number"
-                  value={formData.stock}
-                  onChange={handleInputChange}
                   placeholder="0"
                   min="0"
-                  required
                 />
+                <div aria-live="polite" aria-atomic="true">
+                  <span className="text-sm bg-red-500 mt-2">{state?.error?.stock}</span>
+                </div>
               </div>
 
               <div className="space-y-2 mt-4">
@@ -231,9 +185,15 @@ const AddFruitPage = () => {
             <Button variant="outline" type="button" onClick={() => router.push("/dashboard/inventory")}>
               Batal
             </Button>
-            <Button type="submit" disabled={pending || !image}>
-              {pending ? "Menyimpan..." : "Simpan"}
-            </Button>
+            <div className="flex flex-col space-y-2">
+              {state?.message ? (
+                <span className="text-sm bg-red-500 mt-2">{state.message}</span>
+              ): null}
+              <Button type="submit" disabled={isPending}>
+                {isPending ? "Menyimpan..." : "Simpan"}
+              </Button>
+            </div>
+
           </CardFooter>
         </form>
       </Card>

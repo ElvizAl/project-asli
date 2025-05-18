@@ -1,104 +1,128 @@
 "use client"
-
-import type React from "react"
-
-import { useState, useEffect } from "react"
-import { useRouter, useParams } from "next/navigation"
-import { ArrowLeft } from "lucide-react"
+import { useState, useRef, useTransition, useActionState, useEffect, use } from "react"
+import { useRouter } from "next/navigation"
+import { ArrowLeft, CloudUpload, X } from "lucide-react"
 import Link from "next/link"
-
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import Image from "next/image"
+import { BarLoader } from "react-spinners"
+import { toast } from "sonner"
+import { editBuah, ambilBuahById } from "@/actions/fruit-actions"
 
-// Sample fruit data - in a real app, this would come from your database
-const fruits = [
-  {
-    id: "1",
-    name: "Apel Fuji",
-    price: 25000,
-    stock: 45,
-    image: "/placeholder.svg?height=40&width=40",
-  },
-  {
-    id: "2",
-    name: "Jeruk Mandarin",
-    price: 30000,
-    stock: 32,
-    image: "/placeholder.svg?height=40&width=40",
-  },
-  {
-    id: "3",
-    name: "Pisang Cavendish",
-    price: 18000,
-    stock: 78,
-    image: "/placeholder.svg?height=40&width=40",
-  },
-  {
-    id: "4",
-    name: "Mangga Harum Manis",
-    price: 35000,
-    stock: 5,
-    image: "/placeholder.svg?height=40&width=40",
-  },
-]
+interface EditFruitPageProps {
+  params: Promise<{
+    id: string
+  }>
+}
 
-export default function EditFruitPage() {
+const EditFruitPage = ({ params }: EditFruitPageProps) => {
+  const { id } = use(params);
   const router = useRouter()
-  const params = useParams()
-  const id = params.id as string
+  const inputFileRef = useRef<HTMLInputElement>(null)
+  const [fruit, setFruit] = useState<any>({ name: "", price: 0, stock: 0, image: "" })
+  const [image, setImage] = useState("")
+  const [message, setMessage] = useState("")
+  const [loading, setLoading] = useState(true)
+  const [pending, startTransition] = useTransition()
 
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [fruit, setFruit] = useState({
-    name: "",
-    price: 0,
-    stock: 0,
-  })
-
+  // Fetch fruit data on component mount
   useEffect(() => {
-    // Find the fruit by ID - in a real app, you would fetch this from your API/database
-    const foundFruit = fruits.find((f) => f.id === id)
-    if (foundFruit) {
-      setFruit({
-        name: foundFruit.name,
-        price: foundFruit.price,
-        stock: foundFruit.stock,
+    const loadFruit = async () => {
+      try {
+        const result = await ambilBuahById(id)
+        if (result.error) {
+          toast.error(result.error)
+          return
+        }
+
+        if (result.fruit) {
+          setFruit(result.fruit)
+          setImage(result.fruit.image || "")
+        }
+      } catch (error) {
+        console.error("Error loading fruit:", error)
+        toast.error("Gagal memuat data buah")
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadFruit()
+  }, [id])
+
+  const handleImageUpload = () => {
+    if (!inputFileRef.current?.files) return null
+    const file = inputFileRef.current.files[0]
+
+    // Reset message before new upload
+    setMessage("")
+
+    const formData = new FormData()
+    formData.set("file", file)
+
+    startTransition(async () => {
+      try {
+        const response = await fetch("/api/upload", {
+          method: "PUT",
+          body: formData,
+        })
+
+        const data = await response.json()
+        if (response.status !== 200) {
+          setMessage(data.message)
+          return
+        }
+
+        // Access the blob URL correctly from the response
+        setImage(data.blob.url)
+        toast.success("Upload gambar berhasil")
+      } catch (error) {
+        console.error(error)
+        setMessage("Error uploading image")
+        toast.error("Upload gambar gagal")
+      }
+    })
+  }
+
+  const handleRemoveImage = (imageUrl: string) => {
+    startTransition(async () => {
+      try {
+        await fetch(`/api/upload?imagesUrl=${imageUrl}`, {
+          method: "DELETE",
+        })
+        setImage("")
+      } catch (error) {
+        console.log(error)
+      }
+    })
+  }
+
+  const [state, formAction, isPending] = useActionState(editBuah.bind(null, id, image), null)
+  useEffect(() => {
+    if (state?.success) {
+      toast.success(`Buah ${fruit.name} berhasil diperbarui!`, {
+        description: "Data telah disimpan ke database",
+        action: {
+          label: "Lihat Inventaris",
+          onClick: () => router.push("/dashboard/inventory")
+        }
       })
-    } else {
-      // Redirect if fruit not found
-      router.push("/dashboard/inventory")
+
+      // Optionally automatically navigate after successful update
+      // router.push("/dashboard/inventory");
+    } else if (state?.message && !state?.success) {
+      toast.error(state.message)
     }
-  }, [id, router])
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { id, value } = e.target
-    setFruit((prev) => ({
-      ...prev,
-      [id]: id === "name" ? value : Number(value),
-    }))
-  }
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsSubmitting(true)
-
-    // Simulate form submission
-    setTimeout(() => {
-      setIsSubmitting(false)
-      alert(`Buah ${fruit.name} berhasil diperbarui!`)
-      router.push("/dashboard/inventory")
-    }, 1500)
-  }
-
-  const handleDelete = () => {
-    if (window.confirm(`Apakah Anda yakin ingin menghapus ${fruit.name}?`)) {
-      // Simulate delete
-      setTimeout(() => {
-        alert(`${fruit.name} telah dihapus!`)
-        router.push("/dashboard/inventory")
-      }, 1000)
-    }
+  }, [state, router, fruit.name])
+  if (loading) {
+    return (
+      <div className="flex-1 flex items-center justify-center">
+        <BarLoader />
+      </div>
+    )
   }
 
   return (
@@ -113,66 +137,127 @@ export default function EditFruitPage() {
       </div>
 
       <Card>
-        <form onSubmit={handleSubmit}>
+        <form action={formAction}>
           <CardHeader>
             <CardTitle>Detail Buah</CardTitle>
-            <CardDescription>Edit informasi buah dalam inventaris</CardDescription>
+            <CardDescription className="mb-2">
+              Perbarui informasi buah dalam inventaris
+            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="">
               <div className="space-y-2">
                 <Label htmlFor="name">Nama Buah</Label>
-                <Input id="name" placeholder="Masukkan nama buah" required value={fruit.name} onChange={handleChange} />
+                <Input
+                  id="name"
+                  name="name"
+                  type="text"
+                  placeholder="Masukkan nama buah"
+                  defaultValue={fruit.name}
+                />
+                <div aria-live="polite" aria-atomic="true">
+                  <span className="text-sm text-red-500 mt-2">{state?.error?.name}</span>
+                </div>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="price">Harga (Rp)</Label>
+                <Label htmlFor="price" className="mt-1">
+                  Harga (Rp)
+                </Label>
                 <Input
                   id="price"
+                  name="price"
                   type="number"
                   placeholder="0"
                   min="0"
-                  required
-                  value={fruit.price}
-                  onChange={handleChange}
+                  defaultValue={fruit.price}
                 />
+                <div aria-live="polite" aria-atomic="true">
+                  <span className="text-sm text-red-500 mt-2">{state?.error?.price}</span>
+                </div>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="stock">Stok</Label>
+                <Label htmlFor="stock" className="mt-1">
+                  Stok
+                </Label>
                 <Input
                   id="stock"
+                  name="stock"
                   type="number"
                   placeholder="0"
                   min="0"
-                  required
-                  value={fruit.stock}
-                  onChange={handleChange}
+                  defaultValue={fruit.stock}
                 />
+                <div aria-live="polite" aria-atomic="true">
+                  <span className="text-sm text-red-500 mt-2">{state?.error?.stock}</span>
+                </div>
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-2 mt-4">
                 <Label htmlFor="image">Gambar Buah</Label>
-                <Input id="image" type="file" accept="image/*" />
-                <p className="text-xs text-muted-foreground">Biarkan kosong jika tidak ingin mengubah gambar</p>
+                <div className="flex flex-col w-full max-w-[640px] h-[360px] mt-2 mb-4 items-center justify-center aspect-video border-2 border-gray-300 border-dashed rounded-md cursor-pointer bg-gray-50 relative">
+                  {!image ? (
+                    <>
+                      <Label htmlFor="input-file" className="flex flex-col items-center justify-center w-full h-full">
+                        <div className="flex flex-col items-center justify-center text-gray-500 pt-5 pb-6 z-10">
+                          <div className="flex flex-col items-center justify-center">
+                            {pending ? <BarLoader /> : null}
+                            <CloudUpload size={32} className="w-8 h-8 mb-1" />
+                            <p className="mb-1 text-sm font-bold">Upload Gambar</p>
+                            {message ? (
+                              <p className="text-xs text-red-500">{message}</p>
+                            ) : (
+                              <p className="text-xs">SVG, PNG, JPG, GIF, atau yang lainnya (max:4MB)</p>
+                            )}
+                          </div>
+                        </div>
+                        <input
+                          id="input-file"
+                          ref={inputFileRef}
+                          onChange={handleImageUpload}
+                          name="input-file"
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                        />
+                      </Label>
+                    </>
+                  ) : (
+                    <div className="relative w-full h-full">
+                      <Image src={image || "/placeholder.svg"} alt="Preview" fill className="rounded-md object-cover" />
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="icon"
+                        className="absolute top-2 right-2 z-10"
+                        onClick={() => handleRemoveImage(image)}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </CardContent>
-          <CardFooter className="flex justify-between">
-            <div className="flex space-x-2">
-              <Button variant="outline" type="button" onClick={() => router.push("/dashboard/inventory")}>
-                Batal
-              </Button>
-              <Button variant="destructive" type="button" onClick={handleDelete}>
-                Hapus
+          <CardFooter className="flex justify-between mt-3">
+            <Button variant="outline" type="button" onClick={() => router.push("/dashboard/inventory")}>
+              Batal
+            </Button>
+            <div className="flex flex-col space-y-2">
+              {state?.message ? (
+                <span className="text-sm text-red-500 mt-2">{state.message}</span>
+              ) : null}
+              <Button type="submit" disabled={isPending}>
+                {isPending ? "Menyimpan..." : "Simpan Perubahan"}
               </Button>
             </div>
-            <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Menyimpan..." : "Simpan Perubahan"}
-            </Button>
           </CardFooter>
         </form>
       </Card>
     </div>
   )
 }
+
+export default EditFruitPage

@@ -27,7 +27,7 @@ export default function HeroSection() {
           </div>
           <div className="relative h-[300px] sm:h-[400px] lg:h-[500px] rounded-xl overflow-hidden">
             <Image
-              src="/buah.jpeg"
+              src="/buah.jpg"
               alt="Koleksi buah segar"
               fill
               className="object-cover"

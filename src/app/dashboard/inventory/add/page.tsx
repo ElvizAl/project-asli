@@ -1,9 +1,10 @@
 import AddFruitPage from '@/components/admin/buah/create-form'
+import CreateFruit from '@/components/admin/buah/create-fruit'
 
 const TambahBuah = () => {
   return (
     <div className='max-w-7xl px-4'>
-      <AddFruitPage />
+      <CreateFruit />
     </div>
   )
 }

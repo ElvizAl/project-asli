@@ -1,4 +1,11 @@
-import { z } from "zod"
+import { SendToBack } from "lucide-react"
+import { coerce, z } from "zod"
+
+export const fruitSchema = z.object({
+  name: z.string().min(2),
+  price: coerce.number().gt(0),
+  stock: coerce.number().gt(0),
+})
 
 export const loginSchema = z.object({
   email: z.string().email("Please enter a valid email"),

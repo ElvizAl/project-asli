@@ -15,17 +15,17 @@ datasource db {
 }
 
 model User {
-  id            String         @id @default(uuid())
-  name          String
-  email         String         @unique
-  password      String
-  role          Role           @default(USER)
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
+  id           String         @id @default(uuid())
+  name         String
+  email        String         @unique
+  password     String
+  role         Role           @default(USER)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
   // Hubungan yang ditambahkan
-  orders        Order[]        // User dapat membuat/mengelola pesanan
-  customers     Customer[]     // User dapat membuat/mengelola pelanggan
-  stockEntries  StockHistory[] // User dapat memperbarui stok
+  orders       Order[] // User dapat membuat/mengelola pesanan
+  customers    Customer[] // User dapat membuat/mengelola pelanggan
+  stockEntries StockHistory[] // User dapat memperbarui stok
 }
 
 enum Role {
@@ -36,7 +36,7 @@ enum Role {
 model Fruit {
   id           String         @id @default(cuid())
   name         String
-  price        Float
+  price        Int
   stock        Int
   image        String?
   createdAt    DateTime       @default(now())
@@ -46,19 +46,18 @@ model Fruit {
 }
 
 model Customer {
-  id         String   @id @default(cuid())
-  name       String
-  email      String?  @unique
-  phone      String?
-  address    String?
-  image      String?
-  status     String   @default("active")
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  orders     Order[]
+  id        String   @id @default(cuid())
+  name      String
+  email     String?  @unique
+  phone     String?
+  address   String?
+  gender    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  orders    Order[]
   // Hubungan ditambahkan untuk melacak user mana yang membuat/mengelola pelanggan ini
-  userId     String?
-  user       User?    @relation(fields: [userId], references: [id])
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id])
 }
 
 model Order {
@@ -112,7 +111,7 @@ model StockHistory {
   fruitId     String
   fruit       Fruit    @relation(fields: [fruitId], references: [id])
   quantity    Int
-  type        String   // "in" atau "out"
+  type        String // "in" atau "out"
   description String?
   createdAt   DateTime @default(now())
   // Hubungan ditambahkan untuk melacak user mana yang membuat perubahan stok ini
