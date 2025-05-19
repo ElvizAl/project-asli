@@ -110,7 +110,7 @@ export async function loginUser({
     return {
       success: true,
       role: user.role,
-      redirectTo: user.role === "ADMIN" ? "/dashboard" : "/",
+      redirectTo: user.role === "ADMIN" ? "/dashboard" : "/profile",
     }
   } catch (error) {
     console.error("Login error:", error)

@@ -146,8 +146,6 @@ exports.Prisma.CustomerScalarFieldEnum = {
   email: 'email',
   phone: 'phone',
   address: 'address',
-  image: 'image',
-  status: 'status',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   userId: 'userId'

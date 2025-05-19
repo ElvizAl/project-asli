@@ -29,7 +29,7 @@ export async function middleware(request: NextRequest) {
     }
 
     if (session.role !== "ADMIN") {
-      return NextResponse.redirect(new URL("/", request.url))
+      return NextResponse.redirect(new URL("/profile", request.url))
     }
   }
 
